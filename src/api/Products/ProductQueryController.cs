@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -18,10 +19,14 @@ namespace ProductsApi.Product
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IEnumerable<Product> All() => _service.All();
 
-        [ActionName("GetProduct")]
+
         [HttpGet("{id}")]
+        [ActionName("GetProduct")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<Product> Get(int id) => ParseGetResponse<Product>(_service.Get(id));
 
         protected ActionResult ParseGetResponse<TItem>(ServiceResponse response) =>

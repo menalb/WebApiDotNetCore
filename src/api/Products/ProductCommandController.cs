@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -18,6 +19,8 @@ namespace ProductsApi.Product
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult<Product> Add(Product product) => ParsePostResponse<Product>(_service.Add(product));
 
         protected ActionResult ParseGetResponse<TItem>(ServiceResponse response) =>
@@ -27,11 +30,6 @@ namespace ProductsApi.Product
              FoundServiceResponse<TItem> content => Ok(content.item),
              _ => throw new ArgumentException($"Unhandled case {nameof(response)}")
          };
-
-        [HttpGet("{id}")]
-        [ActionName("GetProduct")]
-        public ActionResult<Product> Get(int id) => ParseGetResponse<Product>(_service.Get(id));
-
 
         protected ActionResult ParsePostResponse<TItem>(ServiceResponse response) where TItem : BaseEntity =>
                response switch
