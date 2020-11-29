@@ -5,9 +5,8 @@ using ProductsApi.Core;
 
 namespace ProductsApi.Product
 {
-    public class ProductService : IProductService
+    public class ProductService : IQueryProductService, ICommandProductService
     {
-
         public IEnumerable<Product> All() => products;
 
         public ServiceResponse Get(int id)
@@ -16,13 +15,18 @@ namespace ProductsApi.Product
             return product is null ? new NotFoundServiceResponse() : new FoundServiceResponse<Product>(product);
         }
 
-        public InsertServiceResponse Add(Product newProduct)
+        public InsertServiceResponse Add(Product newProduct) =>
+            products.Any(product => product.EAN == newProduct.EAN) ?
+                new InsertConflict() :
+                new InsertOkResponse<Product>(newProduct);
+
+        public EditServiceResponse Edit(Product product)
         {
-            if (products.Any(p => p.EAN == newProduct.EAN))
-            {
-                return new InsertConflict();
-            }
-            return new InsertOk<Product>(newProduct);
+            var p = Get(product.Id);
+
+            return p is NotFoundServiceResponse ?
+                new EditNotFoundResponse() :
+                new EditOkResponse<Product>(product);
         }
 
         private static readonly IEnumerable<Product> products = new List<Product>{
@@ -32,11 +36,16 @@ namespace ProductsApi.Product
         };
     }
 
-    public interface IProductService
+    public interface ICommandProductService
+    {
+        InsertServiceResponse Add(Product product);
+        EditServiceResponse Edit(Product product);
+    }
+
+    public interface IQueryProductService
     {
         IEnumerable<Product> All();
         ServiceResponse Get(int id);
-        InsertServiceResponse Add(Product product);
     }
 
 }
