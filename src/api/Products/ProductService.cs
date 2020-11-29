@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using ProductsApi.Core;
+
 namespace ProductsApi.Product
 {
     public class ProductService : IProductService
@@ -37,20 +39,4 @@ namespace ProductsApi.Product
         InsertServiceResponse Add(Product product);
     }
 
-    public record ServiceResponse { }
-    public record NotFoundServiceResponse : ServiceResponse { }
-    public record FoundServiceResponse<TItem> : ServiceResponse
-    {
-        public FoundServiceResponse(TItem foundItem) { item = foundItem; }
-        public TItem item { get; init; }
-    }
-
-    public record InsertServiceResponse : ServiceResponse { }
-
-    public record InsertConflict : InsertServiceResponse { }
-    public record InsertOk<TItem> : InsertServiceResponse
-    {
-        public InsertOk(TItem foundItem) { item = foundItem; }
-        public TItem item { get; init; }
-    }
 }
