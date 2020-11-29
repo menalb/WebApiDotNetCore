@@ -23,6 +23,9 @@ namespace ProductsApi.Product
         [HttpGet("{id}")]
         public ActionResult<Product> Get(int id) => ParseGetResponse<Product>(_service.Get(id));
 
+        [HttpPost]
+        public ActionResult<Product> Add(Product product) => ParsePostResponse<Product>(_service.Add(product));
+
         protected ActionResult ParseGetResponse<TItem>(ServiceResponse response) =>
          response switch
          {
@@ -30,5 +33,13 @@ namespace ProductsApi.Product
              FoundServiceResponse<TItem> content => Ok(content.item),
              _ => throw new ArgumentException($"Unhandled case {nameof(response)}")
          };
+
+        protected ActionResult ParsePostResponse<TItem>(ServiceResponse response) where TItem : BaseEntity =>
+               response switch
+               {
+                   InsertConflict => Conflict(),
+                   InsertOk<TItem> content => Created(nameof(Get), new { id = content.item.Id }),
+                   _ => throw new ArgumentException($"Unhandled case {nameof(response)}")
+               };
     }
 }
