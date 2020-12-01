@@ -32,5 +32,12 @@ namespace ProductsApi.Product
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<Product> Edit(int id, Product product)
             => ModelState.IsValid ? ParsePutResponse<Product>(_service.Edit(id, product)) : BadRequest(ModelState);
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Product> Delete(int id)
+            => ModelState.IsValid ? ParseDeleteResponse<Product>(_service.Delete(id)) : BadRequest(ModelState);
     }
 }

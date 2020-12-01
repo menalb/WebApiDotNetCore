@@ -27,10 +27,13 @@ namespace ProductsApi.Product
                 new EditOkResponse<Product>(product),
                 new EditNotFoundResponse());
 
+        public DeleteServiceResponse Delete(int id) => new DeleteOkResponse();
+
         private TResponse CheckCondition<TItem, TResponse>(
             TItem something, Func<TItem, Boolean> condition, TResponse ok, TResponse noOk
             ) =>
           condition(something) ? ok : noOk;
+
 
         private static readonly IEnumerable<Product> products = new List<Product>{
             new Product{Id=1,Name="Pasta", EAN="123456789"},
@@ -43,6 +46,7 @@ namespace ProductsApi.Product
     {
         InsertServiceResponse Add(Product product);
         EditServiceResponse Edit(int id, Product product);
+        DeleteServiceResponse Delete(int id);
     }
 
     public interface IQueryProductService
