@@ -21,7 +21,8 @@ namespace ProductsApi
         {
 
             services.AddControllers();
-            services.AddScoped<Product.IProductService, Product.ProductService>();
+            services.AddScoped<Product.IQueryProductService, Product.ProductService>();
+            services.AddScoped<Product.ICommandProductService, Product.ProductService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProductsApi", Version = "v1" });

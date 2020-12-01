@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,14 +21,16 @@ namespace ProductsApi.Product
                 new InsertConflict() :
                 new InsertOkResponse<Product>(newProduct);
 
-        public EditServiceResponse Edit(Product product)
-        {
-            var p = Get(product.Id);
+        public EditServiceResponse Edit(int id, Product product) =>
+            CheckCondition<Product, EditServiceResponse>(
+                product, p => Get(id) is NotFoundServiceResponse,
+                new EditOkResponse<Product>(product),
+                new EditNotFoundResponse());
 
-            return p is NotFoundServiceResponse ?
-                new EditNotFoundResponse() :
-                new EditOkResponse<Product>(product);
-        }
+        private TResponse CheckCondition<TItem, TResponse>(
+            TItem something, Func<TItem, Boolean> condition, TResponse ok, TResponse noOk
+            ) =>
+          condition(something) ? ok : noOk;
 
         private static readonly IEnumerable<Product> products = new List<Product>{
             new Product{Id=1,Name="Pasta", EAN="123456789"},
@@ -39,7 +42,7 @@ namespace ProductsApi.Product
     public interface ICommandProductService
     {
         InsertServiceResponse Add(Product product);
-        EditServiceResponse Edit(Product product);
+        EditServiceResponse Edit(int id, Product product);
     }
 
     public interface IQueryProductService

@@ -26,10 +26,11 @@ namespace ProductsApi.Product
             => ParsePostResponse<Product>(_service.Add(product));
 
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Product> Edit(Product product)
-            => ParsePostResponse<Product>(_service.Add(product));
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Product> Edit(int id, Product product)
+            => ModelState.IsValid ? ParsePutResponse<Product>(_service.Edit(id, product)) : BadRequest(ModelState);
     }
 }
