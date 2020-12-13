@@ -33,12 +33,11 @@ namespace ProductsApi.Core
                 _ => throw new ArgumentException($"Unhandled case {nameof(response)}")
             };
 
-        protected ActionResult ParseGetResponse<TItem>(ServiceResponse response) =>
+        protected ActionResult ParseGetResponse<TItem>(TItem response) =>
             response switch
             {
-                NotFoundServiceResponse => NotFound(),
-                FoundServiceResponse<TItem> content => Ok(content.item),
-                _ => throw new ArgumentException($"Unhandled case {nameof(response)}")
+                null => NotFound(),
+                TItem content => Ok(content)
             };
     }
 }

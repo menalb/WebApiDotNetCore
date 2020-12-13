@@ -21,7 +21,7 @@ namespace ProductsApi
         {
 
             services.AddControllers();
-            services.AddScoped<Product.IQueryProductService, Product.ProductService>();
+            services.AddScoped<Product.ProductQuery, Product.ProductQueryDb>();
             services.AddScoped<Product.ICommandProductService, Product.ProductService>();
             services.AddSwaggerGen(c =>
             {

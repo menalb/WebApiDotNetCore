@@ -11,15 +11,14 @@ namespace ProductsApi.Product
     [Route("product")]
     public class ProductQueryController : ApiControllerBase<ProductQueryController>
     {
-        private readonly IQueryProductService _service;
-        public ProductQueryController(ILogger<ProductQueryController> logger, IQueryProductService service)
+        private readonly ProductQuery _query;
+        public ProductQueryController(ILogger<ProductQueryController> logger, ProductQuery query)
             : base(logger)
-            => _service = service;
-
+            => _query = query;
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IEnumerable<Product> All() => _service.All();
+        public IEnumerable<Product> All() => _query.GetAll();
 
 
         [HttpGet]
@@ -27,6 +26,6 @@ namespace ProductsApi.Product
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<Product> Get(int id)
-            => ParseGetResponse<Product>(_service.Get(id));
+            => ParseGetResponse<Product>(_query.Get(id));
     }
 }
