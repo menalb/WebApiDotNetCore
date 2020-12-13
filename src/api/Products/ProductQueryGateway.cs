@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Bogus;
 
 namespace ProductsApi.Product
 {
@@ -11,16 +12,13 @@ namespace ProductsApi.Product
     }
     public class ProductQueryDb : ProductQuery
     {
-        public IEnumerable<Product> GetAll() => products;
+        private readonly IEnumerable<Product> _productsDB;
+        public ProductQueryDb(IEnumerable<Product> products) => _productsDB = products;
 
-        public Product Get(int id) => products.FirstOrDefault(produc => produc.Id == id);
+        public IEnumerable<Product> GetAll() => _productsDB;
 
-        public Product GetByEan(string ean) => products.FirstOrDefault(product => product.EAN == ean);
+        public Product Get(int id) => _productsDB.FirstOrDefault(produc => produc.Id == id);
 
-        private static readonly IEnumerable<Product> products = new List<Product>{
-            new Product{Id=1,Name="Pasta", EAN="123456789"},
-            new Product{Id=2,Name="Tuna", EAN="987654321"},
-            new Product{Id=3,Name="Butter", EAN="63728291"}
-        };
+        public Product GetByEan(string ean) => _productsDB.FirstOrDefault(product => product.EAN == ean);
     }
 }
