@@ -39,5 +39,14 @@ namespace ProductsApi.Core
                 null => NotFound(),
                 TItem content => Ok(content)
             };
+
+        protected ActionResult OkWithLinksHeader<T>(T content, string actionName, PaginationInfo paginationInfo)
+        {
+            Response.Headers.Add(
+                "Link",
+                new HeaderLinksBuilder(paginationInfo, Url.RouteUrl(actionName, new { })).Build()
+                );
+            return Ok(content);
+        }
     }
 }

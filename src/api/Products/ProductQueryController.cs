@@ -19,11 +19,7 @@ namespace ProductsApi.Product
 
         [HttpGet(Name = "GetProducts")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult All(int? page = 1, int? pageSize = 5) =>
-            OkWithLinksHeader(_query.GetAll().Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value),
-                "GetProducts",
-                new PaginationInfo(page.Value, pageSize.Value, _query.GetAll().Count()));
-
+        public ActionResult All(int? page = 1, int? pageSize = 5) => GetPagedProducts(page.Value, pageSize.Value);
 
         [HttpGet]
         [Route("{id}", Name = "GetById")]
@@ -32,13 +28,12 @@ namespace ProductsApi.Product
         public ActionResult<Product> Get(int id)
             => ParseGetResponse<Product>(_query.Get(id));
 
-        private ActionResult OkWithLinksHeader<T>(T content, string actionName, PaginationInfo paginationInfo)
+        private ActionResult GetPagedProducts(int page = 1, int pageSize = 5)
         {
-            Response.Headers.Add(
-                "Link",
-                new HeaderLinksBuilder(paginationInfo, Url.RouteUrl(actionName, new { })).Build()
-                );
-            return Ok(content);
+            var products = _query.GetAll();
+            return OkWithLinksHeader(products.Skip((page - 1) * pageSize).Take(pageSize),
+                "GetProducts",
+                new PaginationInfo(page, pageSize, products.Count()));
         }
     }
 }
