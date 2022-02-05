@@ -33,7 +33,7 @@ namespace ProductsApi.Tests
         public async Task GivenANewProduct_WhenTheIdIsInvalid_ItDoesNotSaveTheProduct()
         {
             var invalidProduct = GiveMeAProduct();
-            invalidProduct.Id = -1;
+            invalidProduct.Id = -1; 
 
             await Assert.ThrowsAsync<ArgumentException>(() => _productService.CreateNewAsync(invalidProduct));
 
